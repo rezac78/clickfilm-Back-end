@@ -1,7 +1,10 @@
 const Mongoose = require("mongoose");
+const RegisterSchema = require("../models/Register");
+const bcrypt = require("bcrypt");
+
 // handle get all user
 exports.getUser = (req, res) => {
-        console.log("hello word");
+  console.log("hello word");
 };
 // // handle get a user
 // exports.getUserbyID = (req, res) => {
@@ -16,21 +19,40 @@ exports.getUser = (req, res) => {
 //   }
 // };
 // // handle post user and save
-// exports.postUserSave = async (req, res) => {
-//   try {
-//     const user = new User({
-//       _id: new Mongoose.Types.ObjectId(),
-//       user_name: req.body.user_name,
-//       user_email: req.body.user_email,
-//       message: req.body.message,
-//     });
-//     await user.save();
-//     return res.status(200).json({ success: "true" });
-//   } catch (err) {
-//     console.log(err);
-//     return res.status(400).json({ error: "error" });
-//   }
-// };
+exports.postUserSave = (req, res, next) => {
+  var username = req.body.username;
+  var email = req.body.email;
+  var password = req.body.password;
+  var confirmPassword = req.body.confirmPassword;
+  if (password !== confirmPassword) {
+    res.json({ message: "Password Not Matched!!!" });
+  } else {
+    bcrypt.hash(password, 10, function (err, hash) {
+      if (err) {
+        return res.json({
+          message: "Something Wrong , try Later!",
+          error: err,
+        });
+      } else {
+        const userDetalis = new RegisterSchema({
+          _id: new Mongoose.Types.ObjectId(),
+          username: username,
+          email: email,
+          password: hash,
+        });
+        userDetalis.save()
+          .then((doc) => {
+            res
+              .status(201)
+              .json({ message: "User Registered SuccessFully", results: doc });
+          })
+          .catch((err) => {
+            res.json(err);
+          });
+      }
+    });
+  }
+};
 // // handle delete user
 // exports.DeleteUser = (req, res) => {
 //   try {

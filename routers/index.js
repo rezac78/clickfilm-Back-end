@@ -10,7 +10,7 @@ router.get("/", indexController.getUser);
 // router.get("/:id", indexController.getUserbyID);
 // // * Send data to database and save
 // // route POST /api/
-// router.post("/", indexController.postUserSave);
+router.post("/signup", indexController.postUserSave);
 // // * Delete a data
 // // route DELETE /api/id
 // router.delete("/:id", indexController.DeleteUser);

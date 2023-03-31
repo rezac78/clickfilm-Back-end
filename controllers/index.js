@@ -52,13 +52,11 @@ exports.SingupUsers = async (req, res, next) => {
     username: req.body.username,
     _id: { $ne: _id },
   });
-  if (emailExists) {
-    return res.status(400).json({ error: "Email already used" });
-  }
   if (UserNameExists) {
-    return res.status(400).json({ error: "Username already used" });
-  }
-  if (password !== confirmPassword) {
+    res.json({ message: "Username already used" });
+  } else if (emailExists) {
+    res.json({ message: "Email already used" });
+  } else if (password !== confirmPassword) {
     res.json({ message: "Password Not Matched!!!" });
   } else {
     bcrypt.hash(password, 10, function (err, hash) {

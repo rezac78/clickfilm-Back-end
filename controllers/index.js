@@ -1,29 +1,63 @@
 const Mongoose = require("mongoose");
 const RegisterSchema = require("../models/Register");
 const bcrypt = require("bcrypt");
-
 // handle get all user
 exports.getUser = (req, res) => {
-  console.log("hello word");
+  RegisterSchema.find()
+    .then((result) => {
+      res.status(200).json({ UsersData: result });
+    })
+    .catch((err) => {
+      console.log(err);
+      res.status(500).json({ error: err });
+    });
 };
-// // handle get a user
-// exports.getUserbyID = (req, res) => {
-//   try {
-//     const _id = req.params.id;
-//     User.findById(_id).then((result) => {
-//       res.status(200).json({ User: result });
-//     });
-//   } catch (err) {
-//     console.log(err);
-//     return res.status(400).json({ error: "error" });
-//   }
-// };
-// // handle post user and save
-exports.postUserSave = (req, res, next) => {
+// handle get a user
+exports.getUserbyID = (req, res) => {
+  try {
+    const _id = req.params.id;
+    RegisterSchema.findById(_id).then((result) => {
+      res.status(200).json({ UsersData: result });
+    });
+  } catch (err) {
+    console.log(err);
+    return res.status(400).json({ error: "error" });
+  }
+};
+// handle deleted a user
+exports.deletedUserbyID = (req, res) => {
+  try {
+    const _id = req.params.id;
+    RegisterSchema.remove(_id).then((result) => {
+      console.log(result);
+      res.status(200).json({ message: "user deleted", result: result });
+    });
+  } catch (err) {
+    console.log(err);
+    return res.status(400).json({ error: err });
+  }
+};
+// handle post user and save
+exports.SingupUsers = async (req, res, next) => {
   var username = req.body.username;
   var email = req.body.email;
   var password = req.body.password;
   var confirmPassword = req.body.confirmPassword;
+  const _id = req.params.id;
+  const emailExists = await RegisterSchema.findOne({
+    email: req.body.email,
+    _id: { $ne: _id },
+  });
+  const UserNameExists = await RegisterSchema.findOne({
+    username: req.body.username,
+    _id: { $ne: _id },
+  });
+  if (emailExists) {
+    return res.status(400).json({ error: "Email already used" });
+  }
+  if (UserNameExists) {
+    return res.status(400).json({ error: "Username already used" });
+  }
   if (password !== confirmPassword) {
     res.json({ message: "Password Not Matched!!!" });
   } else {
@@ -40,7 +74,8 @@ exports.postUserSave = (req, res, next) => {
           email: email,
           password: hash,
         });
-        userDetalis.save()
+        userDetalis
+          .save()
           .then((doc) => {
             res
               .status(201)

@@ -11,8 +11,12 @@ router.get("/:id", indexController.getUserbyID);
 // route Deleted /api/id
 router.delete("/:id", indexController.deletedUserbyID);
 // * Send data to database and save
-// route POST /api/
+// route POST /api/signup
 router.post("/signup", indexController.SingupUsers);
+// route POST /api/login
+router.post("/login", indexController.LoginUsers);
+// route POST /api/change-password
+router.post("/change-password", indexController.ChangePasswordUsers);
 // // * Delete a data
 // // route DELETE /api/id
 // router.delete("/:id", indexController.DeleteUser);

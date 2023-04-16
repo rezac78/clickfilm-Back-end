@@ -1,5 +1,6 @@
 const Mongoose = require("mongoose");
 const Users = require("../models/Register");
+const Films = require("../models/Film");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 // handle get all user
@@ -12,6 +13,34 @@ exports.getUser = (req, res) => {
       console.log(err);
       res.status(500).json({ error: err });
     });
+};
+// handle get all Film
+exports.getFilm = (req, res) => {
+  const FullData = req.body;
+  FullData.map((e) => {
+    var _id = e.id;
+    var tiTleFilm = e.tiTleFilm;
+    var description = e.description;
+    var slug = e.slug;
+    var tags = e.tags;
+    var director = e.director;
+    var actors = e.actors;
+    var mp4 = e.mp4;
+    var cover = e.cover;
+    var coverPhone = e.coverPhone;
+    const filmDetalis = new Films({
+      tiTleFilm: tiTleFilm,
+      description: description,
+      slug: slug,
+      tags: tags,
+      director: director,
+      actors: actors,
+      mp4: mp4,
+      cover: cover,
+      coverPhone: coverPhone,
+    });
+    filmDetalis.save();
+  });
 };
 // handle get a user
 exports.getUserbyID = (req, res) => {

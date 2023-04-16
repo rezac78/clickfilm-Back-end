@@ -5,6 +5,8 @@ const router = new Router();
 //* get all data
 // route GET /api/
 router.get("/", indexController.getUser);
+// route GET /api/Film
+router.post("/Film", indexController.getFilm);
 // //* get a data
 // route GET /api/id
 router.get("/:id", indexController.getUserbyID);
